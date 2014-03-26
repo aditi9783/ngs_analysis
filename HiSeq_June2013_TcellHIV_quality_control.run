@@ -1,0 +1,32 @@
+/mnt/lustre_scratch_2012/agupta/HiSeq_June2013/TcellHIVanalysis/quality_control
+Analysis complete for s1_palindrome_pe.filt
+Analysis complete for s1_palindrome_se.filt
+Analysis complete for s2_palindrome_pe.filt
+Analysis complete for s2_palindrome_se.filt
+
+Working Directory:
+
+Printing trimmomatic command:
+java -jar /mnt/home/agupta/HIV_Sequencing/analysis/Trimmomatic-0.30/trimmomatic-0.30.jar PE -phred33 /mnt/home/agupta/HIV_Sequencing/data/HiSeq_run_June2013/Tcell_HIV_CTTGTA_L002_R1_001.fastq.gz /mnt/home/agupta/HIV_Sequencing/data/HiSeq_run_June2013/Tcell_HIV_CTTGTA_L002_R2_001.fastq.gz s1_palindrome_pe s1_palindrome_se s2_palindrome_pe s2_palindrome_se ILLUMINACLIP:/mnt/home/agupta/HIV_Sequencing/analysis/Trimmomatic-0.30/adapters/TrimmomaticPalindromeSimple.fa:2:30:10 LEADING:3 TRAILING:3 
+
+Trimmomatic Output:
+(b"TrimmomaticPE: Started with arguments: -phred33 /mnt/home/agupta/HIV_Sequencing/data/HiSeq_run_June2013/Tcell_HIV_CTTGTA_L002_R1_001.fastq.gz /mnt/home/agupta/HIV_Sequencing/data/HiSeq_run_June2013/Tcell_HIV_CTTGTA_L002_R2_001.fastq.gz s1_palindrome_pe s1_palindrome_se s2_palindrome_pe s2_palindrome_se ILLUMINACLIP:/mnt/home/agupta/HIV_Sequencing/analysis/Trimmomatic-0.30/adapters/TrimmomaticPalindromeSimple.fa:2:30:10 LEADING:3 TRAILING:3\nUsing PrefixPair: 'TACACTCTTTCCCTACACGACGCTCTTCCGATCT' and 'GTGACTGGAGTTCAGACGTGTGCTCTTCCGATCT'\nUsing Long Clipping Sequence: 'CAAGCAGAAGACGGCATACGAGAT'\nUsing Long Clipping Sequence: 'AGATCGGAAGAGCACACGTCTGAACTCCAGTCAC'\nUsing Long Clipping Sequence: 'AGATCGGAAGAGCGTCGTGTAGGGAAAGAGTGTA'\nUsing Long Clipping Sequence: 'TCGGACTGTAGAACTCTGAACGTGTAGATCTCGGT'\nILLUMINACLIP: Using 1 prefix pairs, 0 forward/reverse sequences, 2 forward only sequences, 2 reverse only sequences\nInput Read Pairs: 131270076 Both Surviving: 129863473 (98.93%) Forward Only Surviving: 1280400 (0.98%) Reverse Only Surviving: 62585 (0.05%) Dropped: 63618 (0.05%)\nTrimmomaticPE: Completed successfully\n", None) 
+
+
+Running fastq_quality_filter on s1_palindrome_pe... Output in s1_palindrome_pe.filt
+
+Running fastQC on s1_palindrome_pe.filt ...
+
+Running fastq_quality_filter on s1_palindrome_se... Output in s1_palindrome_se.filt
+
+Running fastQC on s1_palindrome_se.filt ...
+
+Running fastq_quality_filter on s2_palindrome_pe... Output in s2_palindrome_pe.filt
+
+Running fastQC on s2_palindrome_pe.filt ...
+
+Running fastq_quality_filter on s2_palindrome_se... Output in s2_palindrome_se.filt
+
+Running fastQC on s2_palindrome_se.filt ...
+
+Completed quality control analysis. Files are in /mnt/scratch/agupta/HiSeq_June2013/TcellHIVanalysis/quality_control

@@ -1,0 +1,25 @@
+/mnt/home/agupta/HIV_Sequencing/analysis/bwa-0.7.4
+
+In bwa directory: /mnt/home/agupta/HIV_Sequencing/analysis/bwa-0.7.4
+
+
+BWA PE command:
+./bwa mem /mnt/home/agupta/HIV_Sequencing/analysis/reference_seq/HXB2.fa /mnt/scratch/agupta/HiSeq_June2013/TcellHIVanalysis/quality_control/s1_palindrome_pe.filt /mnt/scratch/agupta/HiSeq_June2013/TcellHIVanalysis/quality_control/s2_palindrome_pe.filt > /mnt/scratch/agupta/HiSeq_June2013/TcellHIVanalysis/mapping/alnpe_s1_s2_palindrome.sam 
+
+
+BWA SE1 command:
+./bwa mem /mnt/home/agupta/HIV_Sequencing/analysis/reference_seq/HXB2.fa /mnt/scratch/agupta/HiSeq_June2013/TcellHIVanalysis/quality_control/s1_palindrome_se.filt > /mnt/scratch/agupta/HiSeq_June2013/TcellHIVanalysis/mapping/alnse_s1_palindrome.sam 
+
+
+BWA SE2 command:
+./bwa mem /mnt/home/agupta/HIV_Sequencing/analysis/reference_seq/HXB2.fa /mnt/scratch/agupta/HiSeq_June2013/TcellHIVanalysis/quality_control/s2_palindrome_se.filt > /mnt/scratch/agupta/HiSeq_June2013/TcellHIVanalysis/mapping/alnse_s2_palindrome.sam 
+
+
+Changing to this directory for mapping: /mnt/scratch/agupta/HiSeq_June2013/TcellHIVanalysis/mapping
+
+Running samtools to convert sam to bam, and to sort the bam files ...
+Merging the sorted bam files ...
+Indexing the merged bam file ...
+Generating mpileup output for the merged bam file ...
+
+Completed Mapping. Files are in /mnt/scratch/agupta/HiSeq_June2013/TcellHIVanalysis/mapping

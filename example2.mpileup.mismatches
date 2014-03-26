@@ -1,0 +1,2 @@
+#<reference position> <reference base> <mpileup coverage> <freq:A> <freq:T> <freq:C> <freq:G> <freq:N> <counts:A> <counts:T> <counts:C> <counts:G> <counts:N> <counts:*>
+108 A 806 0.65447667087 0.063051702396 0.0453972257251 0.216897856242 0.0201765447667 519 50 36 172 16 13
