@@ -35,10 +35,28 @@ for line in file:
 			seq = re.sub('\$', '', seq); # removing '$' symbols
 	#		seq = re.sub('\*', '', seq); # removing '*' symbol that indicates deletion in the read (or a gap?)
 			# deleting '*' results in sum of base counts to be different from coverage reported. Thus, remove '*' count before calculating base fractions, and print '*' count.
+
+			# remove indels and print them in a different file
+			indel_info = re.findall('([+-])(\d+)', seq); # indel has + or - followed by indel length
+
+			if indel_info: # indel is present
+				indel_f.write(line+"\n");
+				#print "indels: ", indel_info; # prints [('-', '3'), ('+', '1')] for two indels (-3 and +1). This is only an example.
+				for idl in indel_info: # has all indels in this line
+					indel_sign = idl[0]; 
+					indel_length = int( idl[1] ); 
+					indel_string = re.search('[+-]\d+[A-Za-z]{%s}' % indel_length, seq); # recover indel, pass variable indel_length using %s
+					#print "indel string:", indel_string.group(0);
+					indel_f.write(content[1] + " : " + indel_string.group(0) +"\n" ); # write indel to file
+					seq = re.sub('[+-]\d+[ATCGatcgNn]{%s}' % indel_length, '', seq); # remove indel from seq string
+					#print "After removing indel: ", seq;
+					indel_f.write("After removing indel: "+seq+"\n\n");
+	
 		        seq_upper = seq.upper(); # convert to upper case	
 			# split seq string into an array
 			seq_list = list(seq_upper);
-
+			
+		
 			if ( int(content[3]) != len(seq_list)):
 				print "Coverage and seq list are different lengths: cov is ", content[3], " and seq len is ", len(seq_list);
 
