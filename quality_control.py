@@ -17,6 +17,14 @@ print ("\nWorking Directory:");
 subprocess.call("pwd");
 #exit(1);
 
+# run FastQC to see the quality of data before any quality control steps are taken
+# load fastQC
+subprocess.call(['bash', '-c', 'module load FastQC/0.10.1']);
+print ("\nRunning fastQC on "+fastq_1+" ...");
+subprocess.call(['fastqc', fastq_1]);
+print ("\nRunning fastQC on "+fastq_2+" ...");
+subprocess.call(['fastqc', fastq_2]);
+
 #run trimmomatic from Trimmomatic-0.3 directory
 trimmomatic_loc = "/mnt/home/agupta/HIV_Sequencing/analysis/Trimmomatic-0.30/trimmomatic-0.30.jar";
 trimmomatic_adaptor_file = "/mnt/home/agupta/HIV_Sequencing/analysis/Trimmomatic-0.30/adapters/TrimmomaticPalindromeSimple.fa";
@@ -36,8 +44,6 @@ print (trim_out.communicate(), '\n');
 # load fastx
 subprocess.call(['bash', '-c', 'module load GNU/4.4.5']);
 subprocess.call(['bash', '-c', 'module load FASTX/0.0.13']);
-# load fastQC
-subprocess.call(['bash', '-c', 'module load FastQC/0.10.1']);
 
 input_files = ["s1_palindrome_pe", "s1_palindrome_se", "s2_palindrome_pe", "s2_palindrome_se"];
 for file in input_files:
