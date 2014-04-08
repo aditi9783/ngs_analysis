@@ -21,7 +21,6 @@ for line in file:
 	# content: [seq_id, pos, N, cov, base_string, qual_string]
 
 #	print content;
-	# if cov (# reads) < 5, don't consider that position
 	if (int(content[3]) < COV_THRES):
 		continue;
 	else:
@@ -36,27 +35,31 @@ for line in file:
 	#		seq = re.sub('\*', '', seq); # removing '*' symbol that indicates deletion in the read (or a gap?)
 			# deleting '*' results in sum of base counts to be different from coverage reported. Thus, remove '*' count before calculating base fractions, and print '*' count.
 
-			# remove indels and print them in a different file
+			# remove indels and print them in a different file: step 1- find all indel occurences (sign and length)
 			indel_info = re.findall('([+-])(\d+)', seq); # indel has + or - followed by indel length
 
 			if indel_info: # indel is present
-				indel_f.write(line+"\n");
+				#print line;
 				#print "indels: ", indel_info; # prints [('-', '3'), ('+', '1')] for two indels (-3 and +1). This is only an example.
+				all_indels = []; # concatenated string of all indels
 				for idl in indel_info: # has all indels in this line
-					indel_sign = idl[0]; 
-					indel_length = int( idl[1] ); 
-					indel_string = re.search('[+-]\d+[A-Za-z]{%s}' % indel_length, seq); # recover indel, pass variable indel_length using %s
-					#print "indel string:", indel_string.group(0);
-					indel_f.write(content[1] + " : " + indel_string.group(0) +"\n" ); # write indel to file
-					seq = re.sub('[+-]\d+[ATCGatcgNn]{%s}' % indel_length, '', seq); # remove indel from seq string
-					#print "After removing indel: ", seq;
-					indel_f.write("After removing indel: "+seq+"\n\n");
+					#print "indel sign and len: ", idl[0], idl[1];
+					pattern_to_match = '\\'+idl[0]+idl[1]+'[A-Za-z]{'+idl[1]+'}'; # '\\' in the begining to escape the + or - sign
+					#print "pattern to match: ", pattern_to_match;
+					all_indels.append( pattern_to_match );
+					#indel_string = re.search('[+-]\d+[A-Za-z]{%s}' % indel_length, seq); # recover indel, pass variable indel_length using %s
+				concatenated_indels = '|'.join(all_indels);
+				#print "concatenated indels: ", concatenated_indels;
+				#print "Before removing indel: ", seq;
+				matched_indels = re.findall(concatenated_indels, seq); # find all indels present 
+				seq = re.sub(concatenated_indels, '', seq); # remove indels, if matching to x|y|z => match to x or y or z
+				indel_f.write(content[1] + " : " + " ".join(matched_indels) + "\n");
+				#print "After removing indel: ", seq;
 	
 		        seq_upper = seq.upper(); # convert to upper case	
 			# split seq string into an array
 			seq_list = list(seq_upper);
 			
-		
 			if ( int(content[3]) != len(seq_list)):
 				print "Coverage and seq list are different lengths: cov is ", content[3], " and seq len is ", len(seq_list);
 
@@ -67,11 +70,11 @@ for line in file:
 			#print q_scores;
 	
 			# check if sequence string and quality string are the same length. Exit if they aren't
-			#if (len(seq_list) != len(q_scores)):
-			#	print seq;
-			#	print len(seq_list), seq_list, '\n', len(q_scores), q_scores;
-			#	print "number of bases from reads do not match number of q-scores at position ", content[1], "\nExiting\n\n!";
-			#	sys.exit(1);
+			if (len(seq_list) != len(q_scores)):
+				print seq;
+				print len(seq_list), seq_list, '\n', len(q_scores), q_scores;
+				print "number of bases from reads do not match number of q-scores at position ", content[1], "\nExiting\n\n!";
+				sys.exit(1);
 
 			low_qual_bases = 0;
 			for qs in q_scores:
@@ -85,42 +88,14 @@ for line in file:
 			else:
 	
 				counts = {'A':0, 'T':0, 'C':0, 'G':0, 'N':0, '*':0}; # counts for A,T,C,G
-				indel_flag = 0;
-				indel_len = 0;
-				indel = [];
 				refbase = content[2].upper();
 				for i in range(len(seq_list)):
 					if (q_scores[i] >= QSCORE_THRES): # only considering bases that have q-scores greather than threshold
 						b = seq_list[i]; # ith base in the sequence string
-						if (indel_flag == 0):
-							if (b == '.' or b == ','):
-								counts[ refbase ] += 1;
-							elif (b == '+' or b == '-'):
-								indel_flag = 1; 
-								indel.append(b);
-							else:
-								counts[ b ] += 1;
-						elif (indel_flag == 1):
-							if (indel_len == 0):
-								if (b.isalpha() or b == '*'): # b is a alphabet or '*'
-									indel_len = int( "".join( indel[1:] ) ); # indel list: indel[0] is +/-, followed by indel len before first base
-								indel.append(b); # save the current indel base, which is also the first indel base
-								if (indel_len == 1):# only one indel base, i.e. current base, so write that out
-									indel_f.write(str(content[1]) + " : " + "".join( indel ) +"\n" );
-									# reset flags/lists
-									indel = [];					
-									indel_flag = 0;
-									indel_len = 0;
-							
-							else: # indel len is > 1, so keep saving correct indel bases and adjusting remaining indel_len.
-								indel.append(b);
-								indel_len -= 1;
-								if (indel_len == 1): # indel len == 1 means current base is last indel base, so write it out. 
-									indel_f.write(str(content[1]) + " : " + "".join( indel ) +"\n" );
-									# reset flags/lists
-									indel = [];					
-									indel_flag = 0;
-									indel_len = 0;
+						if (b == '.' or b == ','):
+							counts[ refbase ] += 1;
+						else:
+							counts[ b ] += 1;
 			
 				# only interested in counts for A, T, C, G (not interested in N or *)
 				sumC = float( counts['A'] + counts['T'] + counts['C'] + counts['G'] ); # this is effective coverage
